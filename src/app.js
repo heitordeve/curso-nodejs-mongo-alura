@@ -1,5 +1,6 @@
 import express from "express";
 import conectBaseDados from "./config/dbConnect.js";
+import livro from "./models/Livro.js";
 
 const conexao = await conectBaseDados();
 
@@ -15,36 +16,19 @@ const app = express();
 
 app.use(express.json());
 
-const livros = [
-    {
-        id: 1,
-        nomeLivro: "Livro 1"
-    },
-    {
-        id: 2,
-        nomeLivro: "Livro 2"
-    },
-]
-
-function buscarLivrosporID(id){
-    return livros.findIndex(livro => {
-        return livro.id === Number(id);
-    })
-}
-
 app.get("/", (req, res) => {
     res.status(200).send("Curso de NodeJS");
+});
+
+app.get("/livros", async (req, res) => {
+    const listaLivros = await livro.find({});
+    res.status(200).json(listaLivros);
 });
 
 app.get("/livros/:id", (req, res) => {
     const index = buscarLivrosporID(req.params.id);
     res.status(200).json(livros[index]);
 });
-
-app.get("/livros", (req, res) => {
-    res.status(200).json(livros);
-});
-
 
 app.post("/livros", (req,res) => {
     livros.push(req.body);
